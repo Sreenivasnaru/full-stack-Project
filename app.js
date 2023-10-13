@@ -44,7 +44,19 @@ const validateListing = (req, res, next) => {
     } else {
         next();
     }
-}
+};
+
+const validateReview = (req, res, next) => {
+    let {error} = reviewSchema.validate(req.body);
+    if(error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    }
+};
+
+
 
 //Index Route
 app.get("/listings", wrapAsync(async(req, res) => {
@@ -95,7 +107,7 @@ app.delete("/listings/:id", wrapAsync(async(req, res) => {
 
 //Reviews
 // //Post Route
-app.post("/listings/:id/reviews", async(req, res) => {
+app.post("/listings/:id/reviews",validateReview, wrapAsync(async(req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
 
@@ -106,7 +118,7 @@ app.post("/listings/:id/reviews", async(req, res) => {
 
     console.log("new review saved");
     res.send("new Review saved");
-});
+}));
 
 
 // app.get("/testListing", async (req, res) => {
