@@ -1,52 +1,30 @@
 const express = require("express");
 const app = express();
+const session = require("express-session");
 
-app.get("/", (req, res) => {
-    res.send("Hi, I am root");
+const sessionOptions = {secret: "mysupersecretstring", resave: false, saveUninitialized: true,};
+app.use(session(sessionOptions));
+
+app.get("/register", (req, res) => {
+    let { name = "anonymous"} = req.query;
+    console.log(req.session);
+    res.send(name); 
 });
 
-//Index - users
-app.get("/users", (req, res) => {
-    res.send("GET for users");
-});
+app.get("/hello", (req, res) => {
+    res.send(`hello`);
+})
 
-//show - users
-app.get("/users/:id", (req, res) => {
-    res.send("GET for users id");
-});
+// app.get("/reqcount", (req, res) => {
+//     if(req.session.count) {
+//         req.session.count++;
+//     } else {
+//         req.session.count = 1;
+//     }
+    
+//     res.send(`You sent a request ${req.session.count} times`);
+// });
 
-//POST - users
-app.post("/users", (req, res) => {
-    res.send("POST for  users");
-});
-
-//DELETE - users
-app.delete("/users/:id", (req, res) => {
-    res.send("DELETE for users id");
-});
-
-
-//Posts
-
-//Index
-app.get("/posts", (req, res) => {
-    res.send("GET for posts");
-});
-
-//show 
-app.get("/posts/:id", (req, res) => {
-    res.send("GET for post id");
-});
-
-//POST 
-app.post("/posts", (req, res) => {
-    res.send("POST for  posts");
-});
-
-//DELETE
-app.delete("/posts/:id", (req, res) => {
-    res.send("DELETE for post id");
-});
 app.listen(3000, () => {
     console.log("server is listening to 3000");
 });
