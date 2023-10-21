@@ -6,6 +6,8 @@ const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing.js");
 
 
+
+
 const validateListing = (req, res, next) => {
     let {error} = listingSchema.validate(req.body);
     if(error) {
@@ -37,6 +39,7 @@ router.get("/:id", wrapAsync(async(req,res) => {
 router.post("/", validateListing,wrapAsync(async(req, res, next) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
+    req.flash("success", "New Listing Created!");
     res.redirect("/listings");
 }));
 
